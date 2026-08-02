@@ -296,6 +296,10 @@ Quantis, its product identity, documentation, diagrams, screenshots, recordings,
 
 Third-party technologies and services retain their respective trademarks, licenses, and copyrights. References to planned integrations describe product direction and do not imply endorsement, partnership, or current availability.
 
+## License
+
+Quantis is proprietary software. This public repository is provided for
+demonstration and portfolio review only. See [LICENSE](LICENSE).
 ---
 
 <p align="center">
