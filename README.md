@@ -54,6 +54,79 @@ The analysis registry is the contract. A registered module carries its metadata,
 
 This boundary is deliberate: the UI renders engine output; it does not reimplement financial calculations in TypeScript.
 
+## Native CLI
+
+> **Supported today.** The current demonstration includes a native C++20 command-line interface backed by the same engine and analysis registry used by the web workspace and REST service.
+
+The CLI supports module discovery, one-shot analysis, a persistent local watchlist, and a continuously refreshing market view.
+
+| Command | Current behavior |
+| --- | --- |
+| `quantis version` | Print the installed native-client version |
+| `quantis modules` | Discover every registered technical and sentiment module |
+| `quantis analyze SYMBOL technical` | Run all six technical modules for a supported demonstration ticker |
+| `quantis analyze SYMBOL sentiment` | Run all four sentiment modules for a supported demonstration ticker |
+| `quantis add SYMBOL` | Add a supported ticker to the local watchlist |
+| `quantis remove SYMBOL` | Remove a ticker from the local watchlist |
+| `quantis list` | Render the latest snapshot for every watched ticker |
+| `quantis live` | Refresh prices, change, volume, risk, and alerts once per second |
+
+```console
+$ quantis modules
+MODULE                         CATEGORY     DESCRIPTION
+Relative Strength Index        technical    Measures the balance of recent gains and losses.
+EMA Crossover                  technical    Compares fast and slow exponential moving averages.
+Headline Polarity              sentiment    Scores curated headlines with a transparent lexicon.
+
+$ quantis analyze TSLA technical
+Analysis for TSLA
+MODULE                         SIGNAL       SCORE    CONFIDENCE
+Relative Strength Index        bearish      -0.20        82.00%
+EMA Crossover                  bullish       0.19        62.68%
+```
+
+Watchlist state is persisted locally through SQLite. Analysis commands query the native registry directly, so the CLI does not require the React application to calculate or display results.
+
+<p align="center">
+  <img src="assets/images/quantis%20cli%20modules.png" alt="Quantis native CLI showing the current technical and sentiment module registry" width="100%" />
+</p>
+
+## REST API
+
+> **Supported today.** The demonstration exposes an authenticated JSON REST API and a server-sent event stream from the C++ service.
+
+The API is the contract between the native engine and the product surfaces. It exposes profiles, synchronized watchlists, market snapshots, module discovery, technical analysis, sentiment analysis, and one-second live updates.
+
+| Method | Endpoint | Current behavior |
+| --- | --- | --- |
+| `GET` | `/api/v1/health` | Service and native-engine health |
+| `POST` | `/api/v1/access/verify` | Exchange an invitation code for a secure session |
+| `POST` | `/api/v1/access/request` | Submit a preview-access request |
+| `POST` | `/api/v1/logout` | Revoke the current session |
+| `GET` | `/api/v1/profile` | Current profile and synchronized watchlist |
+| `GET` | `/api/v1/snapshot` | Current simulated market universe |
+| `GET` | `/api/v1/modules` | Registered analysis-module catalog |
+| `GET` | `/api/v1/analysis/:symbol/:category` | Technical or sentiment results for one symbol |
+| `GET` | `/api/v1/stream` | One-second server-sent snapshot stream |
+| `POST` | `/api/v1/watchlist` | Add a supported symbol to the synchronized watchlist |
+| `DELETE` | `/api/v1/watchlist/:symbol` | Remove a symbol from the synchronized watchlist |
+
+With the exception of the health and access entry points, requests use the secure `quantis_session` cookie returned after invitation-code verification.
+
+```bash
+# Exchange a private invitation code for a server-managed session.
+curl -c quantis-cookie.txt \
+  -H "Content-Type: application/json" \
+  -d '{"code":"<ACCESS_CODE>"}' \
+  https://www.quantisresearch.com/api/v1/access/verify
+
+# Request the engine's typed technical-analysis results.
+curl -b quantis-cookie.txt \
+  https://www.quantisresearch.com/api/v1/analysis/TSLA/technical
+```
+
+Analysis responses include module metadata, signal direction, score, confidence, measured value, unit, summary, and supporting insights. The API returns research data only; it exposes no brokerage, custody, order, payment, or transaction endpoint.
+
 ## Demonstration gallery
 
 ### Native analysis
@@ -101,11 +174,11 @@ Every result includes an interpretable signal, normalized score, confidence valu
 
 The diagram separates three states clearly:
 
-- **Demo core** — capabilities operating in the current product demonstration.
-- **Full suite** — target services and delivery surfaces planned around the existing analytical core.
-- **External** — licensed data, news, social, brokerage, and wallet providers that remain outside Quantis.
+- **Demo core:** capabilities operating in the current product demonstration.
+- **Full suite:** target services and delivery surfaces planned around the existing analytical core.
+- **External:** licensed data, news, social, brokerage, and wallet providers that remain outside Quantis.
 
-The C++20 engine stays intact as the analytical source of truth. Identity, OAuth, notifications, profile collaboration, visualization, and device synchronization belong around it—not inside it. This keeps engine modules independently testable and allows the same capability to surface through the CLI, API, terminal, and web workspace.
+The C++20 engine stays intact as the analytical source of truth. Identity, OAuth, notifications, profile collaboration, visualization, and device synchronization belong around it, not inside it. This keeps engine modules independently testable and allows the same capability to surface through the CLI, API, terminal, and web workspace.
 
 ## Demo versus full suite
 
@@ -160,7 +233,7 @@ The demonstration minimizes the amount of data it needs:
 - Profile state remains server-side; the browser cannot decode or rewrite it from the session cookie.
 - No brokerage secrets, wallet private keys, seed phrases, payment information, or trading credentials are collected.
 
-The full suite would add tenant-level authorization, immutable audit events, managed-key encryption, verified identities, formal backup and recovery procedures, security testing, and explicit data-lifecycle controls. These are design requirements—not current certifications.
+The full suite would add tenant-level authorization, immutable audit events, managed-key encryption, verified identities, formal backup and recovery procedures, security testing, and explicit data-lifecycle controls. These are design requirements, not current certifications.
 
 ## Technology profile
 
