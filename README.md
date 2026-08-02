@@ -26,6 +26,10 @@
 
 ## The product
 
+
+https://github.com/user-attachments/assets/94bdb298-c4f0-4661-ba9d-dfb2777fb0b2
+
+
 Quantis turns a market snapshot into a structured research view. A stateful C++20 engine owns market state and analysis; the web workspace, native CLI, and REST API consume the same typed results. Indicators are calculated once, exposed consistently, and kept separate from presentation logic.
 
 The current release is intentionally narrow: a credible, end-to-end demonstration of the product architecture rather than a claim of production-market coverage. The planned full suite expands the universe, collaboration model, data integrations, and operational envelope while preserving the native engine as the analytical center of gravity.
@@ -90,6 +94,12 @@ Watchlist state is persisted locally through SQLite. Analysis commands query the
 <p align="center">
   <img src="assets/images/quantis%20cli%20modules.png" alt="Quantis native CLI showing the current technical and sentiment module registry" width="100%" />
 </p>
+
+
+
+https://github.com/user-attachments/assets/fd2b7c3f-3c21-4ccc-9115-f6163c564e0c
+
+
 
 ## REST API
 
@@ -165,6 +175,16 @@ Analysis responses include module metadata, signal direction, score, confidence,
 | Volatility Regime | Short-horizon realized-volatility classification |  |  |
 
 Every result includes an interpretable signal, normalized score, confidence value, plain-language summary, and supporting insights. The demonstration favors transparent heuristics over unexplained recommendations.
+
+
+
+https://github.com/user-attachments/assets/e37cfcfd-60a1-4005-aba9-751799cc24a5
+
+
+
+https://github.com/user-attachments/assets/3b052200-7798-4e52-8d86-07713c47d511
+
+
 
 ## System architecture
 
