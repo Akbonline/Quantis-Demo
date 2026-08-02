@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://www.quantisresearch.com/"><strong>Open the live preview</strong></a>
   &nbsp;&middot;&nbsp;
-  <a href="#system-architecture">Architecture</a>
+  <a href="#system-design">Architecture</a>
   &nbsp;&middot;&nbsp;
   <a href="#demo-versus-full-suite">Product scope</a>
   &nbsp;&middot;&nbsp;
@@ -23,6 +23,20 @@
 </p>
 
 > **Demonstration release.** Quantis currently uses simulated prices and curated headlines. Signals are provided for educational research and product evaluation, not investment advice. No brokerage connection, custody, payment flow, trading transaction, or order execution is present in the demo.
+
+## System design
+
+<p align="center">
+  <img src="assets/images/quantis-system-architecture.png" alt="Quantis three-dimensional system architecture" width="100%" />
+</p>
+
+The diagram separates three states clearly:
+
+- **Demo core:** capabilities operating in the current product demonstration.
+- **Full suite:** target services and delivery surfaces planned around the existing analytical core.
+- **External:** licensed data, news, social, brokerage, and wallet providers that remain outside Quantis.
+
+The C++20 engine stays intact as the analytical source of truth. Identity, OAuth, notifications, profile collaboration, visualization, and device synchronization belong around it, not inside it. This keeps engine modules independently testable and allows the same capability to surface through the CLI, API, terminal, and web workspace.
 
 ## The product
 
@@ -185,20 +199,6 @@ https://github.com/user-attachments/assets/e37cfcfd-60a1-4005-aba9-751799cc24a5
 https://github.com/user-attachments/assets/3b052200-7798-4e52-8d86-07713c47d511
 
 
-
-## System architecture
-
-<p align="center">
-  <img src="assets/images/quantis-system-architecture.png" alt="Quantis three-dimensional system architecture" width="100%" />
-</p>
-
-The diagram separates three states clearly:
-
-- **Demo core:** capabilities operating in the current product demonstration.
-- **Full suite:** target services and delivery surfaces planned around the existing analytical core.
-- **External:** licensed data, news, social, brokerage, and wallet providers that remain outside Quantis.
-
-The C++20 engine stays intact as the analytical source of truth. Identity, OAuth, notifications, profile collaboration, visualization, and device synchronization belong around it, not inside it. This keeps engine modules independently testable and allows the same capability to surface through the CLI, API, terminal, and web workspace.
 
 ## Demo versus full suite
 
